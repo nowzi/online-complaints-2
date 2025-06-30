@@ -1,0 +1,33 @@
+<div id="complaints"></div>
+<script>
+  const token = localStorage.getItem('token');
+  fetch('/api/complaints', {
+    headers: { 'Authorization': token }
+  })
+    .then(res => res.json())
+    .then(data => {
+      document.getElementById('complaints').innerHTML = data.map(c => `
+        <div>
+          <h4>${c.title}</h4>
+          <p>${c.description}</p>
+          <p>Status: ${c.status}</p>
+          <select onchange="updateStatus('${c._id}', this.value)">
+            <option>Pending</option>
+            <option>Resolved</option>
+            <option>Closed</option>
+          </select>
+        </div>
+      `).join('');
+    });
+
+  function updateStatus(id, status) {
+    fetch(`/api/complaints/${id}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': token
+      },
+      body: JSON.stringify({ status })
+    }).then(() => alert('Status updated'));
+  }
+</script>

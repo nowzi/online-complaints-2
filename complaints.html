@@ -1,0 +1,19 @@
+<form id="complaintForm">
+  <input type="text" name="title" placeholder="Title" required />
+  <textarea name="description" placeholder="Description" required></textarea>
+  <button type="submit">Submit Complaint</button>
+</form>
+<div id="complaintList"></div>
+<script>
+  const token = localStorage.getItem('token');
+  document.getElementById('complaintForm').onsubmit = async (e) => {
+    e.preventDefault();
+    const data = Object.fromEntries(new FormData(e.target).entries());
+    await fetch('/api/complaints', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': token },
+      body: JSON.stringify(data)
+    });
+    alert('Complaint submitted');
+  };
+</script>
